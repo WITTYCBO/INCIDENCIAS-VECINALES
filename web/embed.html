@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Incidencias vecinales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.5;
+      font-size: 16px;
+      background-color: #f5f6fa;
+      color: #1a1a1a;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(960px, 100%);
+      padding: 2.5rem 1.5rem 4rem;
+      box-sizing: border-box;
+    }
+
+    .header h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2rem, 4vw, 2.5rem);
+    }
+
+    .header p {
+      margin: 0 0 2rem;
+      color: #4a4a4a;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 35px -25px rgba(0, 0, 0, 0.6);
+    }
+
+    .form-section h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: #1f3a8a;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .field-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    label {
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    .helper {
+      margin: -0.25rem 0 0;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.4rem;
+      border-radius: 999px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #ffffff;
+      box-shadow: 0 10px 30px -18px #2563eb;
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 38px -20px rgba(37, 99, 235, 0.5);
+    }
+
+    .btn-secondary {
+      background-color: #e0e7ff;
+      color: #1e3a8a;
+    }
+
+    .location {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .coords {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #f3f4f6;
+      border-radius: 12px;
+      padding: 1rem;
+      color: #1f2937;
+    }
+
+    .alert {
+      margin-top: 2rem;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      background-color: #e5f6ff;
+      color: #0369a1;
+      display: none;
+    }
+
+    .alert.is-error {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .alert.is-success {
+      background-color: #dcfce7;
+      color: #14532d;
+    }
+
+    .disclaimer {
+      margin: 0.75rem 0 0;
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    @media (max-width: 640px) {
+      .form {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>Registro de incidencias vecinales</h1>
+      <p>Completa el formulario para registrar una incidencia en tu municipio.</p>
+    </header>
+
+    <form id="incident-form" class="form" novalidate>
+      <section class="form-section">
+        <h2>Datos del reportante</h2>
+        <div class="field-group">
+          <label for="firstName">Nombre *</label>
+          <input id="firstName" name="firstName" type="text" required autocomplete="given-name" />
+          <p class="helper">Introduce tu nombre.</p>
+        </div>
+        <div class="field-group">
+          <label for="lastName">Apellido *</label>
+          <input id="lastName" name="lastName" type="text" required autocomplete="family-name" />
+        </div>
+        <div class="field-grid">
+          <div class="field-group">
+            <label for="phone">Teléfono</label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" />
+            <p class="helper">Formato recomendado: +34 600 000 000</p>
+          </div>
+          <div class="field-group">
+            <label for="email">Correo electrónico</label>
+            <input id="email" name="email" type="email" autocomplete="email" />
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Detalle de la incidencia</h2>
+        <div class="field-group">
+          <label for="incidentType">Tipo de incidencia *</label>
+          <select id="incidentType" name="incidentType" required>
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option value="Iluminación">Iluminación</option>
+            <option value="Deterioros">Deterioros</option>
+            <option value="Fuga de agua">Fuga de agua</option>
+            <option value="Residuos">Residuos</option>
+            <option value="Ruido">Ruido</option>
+            <option value="Otra">Otra</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="description">Descripción *</label>
+          <textarea id="description" name="description" rows="4" required placeholder="Describe lo que ocurre"></textarea>
+        </div>
+        <div class="field-group">
+          <label for="photo">Fotografía *</label>
+          <input id="photo" name="photo" type="file" accept="image/*" capture="environment" required />
+          <p class="helper">Puedes usar la cámara de tu móvil o subir una imagen existente.</p>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Ubicación</h2>
+        <div class="location">
+          <button id="locate-btn" class="btn-secondary" type="button">Obtener ubicación actual</button>
+          <div class="coords" id="coords-display">Sin datos de ubicación.</div>
+          <input id="latitude" name="latitude" type="hidden" />
+          <input id="longitude" name="longitude" type="hidden" />
+        </div>
+      </section>
+
+      <section class="form-section">
+        <button class="btn-primary" type="submit">Enviar incidencia</button>
+        <p class="disclaimer">
+          Al enviar, aceptas que los datos serán tratados exclusivamente para gestionar la incidencia.
+        </p>
+      </section>
+    </form>
+
+    <section class="alert" id="message" role="status" aria-live="polite"></section>
+  </main>
+
+  <script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/REEMPLAZA_CON_TU_URL/exec';
+
+    const form = document.getElementById('incident-form');
+    const messageEl = document.getElementById('message');
+    const locateBtn = document.getElementById('locate-btn');
+    const coordsDisplay = document.getElementById('coords-display');
+    const latitudeInput = document.getElementById('latitude');
+    const longitudeInput = document.getElementById('longitude');
+
+    function showMessage(text, type = 'info') {
+      messageEl.textContent = text;
+      messageEl.classList.remove('is-error', 'is-success');
+      if (type === 'error') {
+        messageEl.classList.add('is-error');
+      } else if (type === 'success') {
+        messageEl.classList.add('is-success');
+      }
+      messageEl.style.display = 'block';
+    }
+
+    function hideMessage() {
+      messageEl.style.display = 'none';
+      messageEl.textContent = '';
+      messageEl.classList.remove('is-error', 'is-success');
+    }
+
+    function formatCoordinates(lat, lng) {
+      return `Lat: ${Number(lat).toFixed(6)} | Lng: ${Number(lng).toFixed(6)}`;
+    }
+
+    async function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = reader.result.split(',')[1];
+          resolve({
+            name: file.name,
+            type: file.type,
+            data: base64String,
+          });
+        };
+        reader.onerror = () => reject(new Error('No se pudo leer el archivo.'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    locateBtn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        showMessage('La geolocalización no es compatible con tu dispositivo.', 'error');
+        return;
+      }
+
+      locateBtn.disabled = true;
+      locateBtn.textContent = 'Obteniendo ubicación…';
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          latitudeInput.value = latitude;
+          longitudeInput.value = longitude;
+          coordsDisplay.textContent = formatCoordinates(latitude, longitude);
+          hideMessage();
+          locateBtn.disabled = false;
+          locateBtn.textContent = 'Obtener ubicación actual';
+        },
+        (error) => {
+          console.error(error);
+          showMessage('No se pudo obtener la ubicación. Comprueba los permisos del navegador.', 'error');
+          locateBtn.disabled = false;
+          locateBtn.textContent = 'Obtener ubicación actual';
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000,
+        }
+      );
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      hideMessage();
+
+      if (!form.reportValidity()) {
+        showMessage('Por favor, completa los campos obligatorios.', 'error');
+        return;
+      }
+
+      const photoFile = form.photo.files[0];
+      if (!photoFile) {
+        showMessage('Debes adjuntar una fotografía de la incidencia.', 'error');
+        return;
+      }
+
+      const incident = {
+        firstName: form.firstName.value.trim(),
+        lastName: form.lastName.value.trim(),
+        phone: form.phone.value.trim(),
+        email: form.email.value.trim(),
+        incidentType: form.incidentType.value,
+        description: form.description.value.trim(),
+        latitude: latitudeInput.value,
+        longitude: longitudeInput.value,
+        timestamp: new Date().toISOString(),
+      };
+
+      try {
+        const photo = await fileToBase64(photoFile);
+
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ incident, photo }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error al guardar la incidencia (${response.status}).`);
+        }
+
+        const result = await response.json();
+        if (result?.status !== 'success') {
+          throw new Error(result?.message || 'No se pudo registrar la incidencia.');
+        }
+
+        form.reset();
+        coordsDisplay.textContent = 'Sin datos de ubicación.';
+        latitudeInput.value = '';
+        longitudeInput.value = '';
+        showMessage('¡Incidencia registrada correctamente!', 'success');
+      } catch (error) {
+        console.error(error);
+        showMessage(error.message || 'Se produjo un error al enviar la incidencia.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
