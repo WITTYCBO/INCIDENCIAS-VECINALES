@@ -8,6 +8,7 @@ Este proyecto proporciona una interfaz web y un script de Google Apps Script par
   - `index.html`: formulario de registro.
   - `styles.css`: estilos del formulario.
   - `app.js`: lógica de geolocalización, captura de imagen y envío a Google Apps Script.
+  - `embed.html`: versión autocontenida lista para pegarse en un bloque de código de Google Sites.
 - `apps_script/Code.gs`: backend sin servidor que guarda la incidencia en Google Sheets y almacena la fotografía en Google Drive.
 
 ## Requisitos previos
@@ -30,9 +31,19 @@ Este proyecto proporciona una interfaz web y un script de Google Apps Script par
 
 ### 2. Preparar la interfaz web
 
-1. Copia los archivos de la carpeta `web/` al alojamiento que prefieras o incrústalos en Google Sites utilizando el bloque **Insertar → Código**.
+#### Opción A: incrustar directamente en Google Sites
+
+1. Abre `web/embed.html` y reemplaza el texto `https://script.google.com/macros/s/REEMPLAZA_CON_TU_URL/exec` por la URL del Web App desplegado en el paso anterior.
+2. Entra a tu Google Site, selecciona la página donde quieres mostrar el formulario y ve a **Insertar → Incrustar → Insertar código**.
+3. Pega el contenido completo de `web/embed.html`, pulsa **Siguiente** y luego **Insertar**.
+4. Ajusta el tamaño del bloque incrustado para que ocupe el ancho disponible (por ejemplo, 100% de ancho y alto mínimo 900 px).
+5. Publica el sitio. El formulario quedará operativo dentro de Google Sites sin necesidad de servidores adicionales.
+
+#### Opción B: alojar los archivos en otro servicio web
+
+1. Copia los archivos de la carpeta `web/` al alojamiento que prefieras (Netlify, GitHub Pages, servidor propio, etc.).
 2. Edita `web/app.js` y reemplaza la constante `APPS_SCRIPT_URL` por la URL del Web App desplegado en el paso anterior.
-3. Publica el sitio. Si usas Google Sites, pega el HTML de `index.html` en un bloque de código o sube los archivos a un hosting externo y usa un iframe en tu sitio.
+3. Publica el sitio. Si quieres integrarlo en Google Sites desde un hosting externo, usa **Insertar → Incrustar → Insertar URL** y proporciona la dirección pública de tu formulario.
 
 ### 3. Uso de la aplicación
 
